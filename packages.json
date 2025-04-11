@@ -81,6 +81,7 @@
 				"ublue-brew",
 				"ublue-fastfetch",
 				"ublue-motd",
+				"uld",
 				"usbmuxd",
 				"wireguard-tools",
 				"wl-clipboard",
@@ -214,7 +215,10 @@
 	},
 	"42": {
 		"include": {
-			"all": ["google-noto-fonts-all"],
+			"all": [
+        "google-noto-fonts-all",
+        "uupd"
+      ],
 			"dx": []
 		},
 		"exclude": {
