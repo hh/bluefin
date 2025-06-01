@@ -14,6 +14,19 @@ set -eoux pipefail
 #    rpm-ostree override replace https://bodhi.fedoraproject.org/updates/FEDORA-2024-dd2e9fb225
 #fi
 
+# Workaround mutter regression, remove in early June
+# https://bugzilla.redhat.com/show_bug.cgi?id=2369147
+if [[ "${FEDORA_MAJOR_VERSION}" -eq "42" ]]; then
+    dnf5 -y swap mutter mutter-0:48.1-1.fc42 && \
+    dnf5 versionlock add mutter
+fi
+
+# Use dnf list --showduplicates package
+
+# Workaround atheros-firmware regression
+# see https://bugzilla.redhat.com/show_bug.cgi?id=2365882
+dnf -y swap atheros-firmware atheros-firmware-20250311-1$(rpm -E %{dist})
+
 # Current bluefin systems have the bling.sh and bling.fish in their default locations
 mkdir -p /usr/share/ublue-os/bluefin-cli
 cp /usr/share/ublue-os/bling/* /usr/share/ublue-os/bluefin-cli
