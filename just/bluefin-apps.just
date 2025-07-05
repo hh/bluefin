@@ -124,8 +124,10 @@ install-jetbrains-toolbox:
     curl -sSfL -O "${DOWNLOAD_LINK}"
     curl -sSfL "${CHECKSUM_LINK}" | sha256sum -c
     tar zxf jetbrains-toolbox-"${BUILD_VERSION}".tar.gz
+    mkdir -p $HOME/.local/share/JetBrains/ToolboxApp/
+    mv jetbrains-toolbox-"${BUILD_VERSION}"/* $HOME/.local/share/JetBrains/ToolboxApp/
     echo "Launching JetBrains Toolbox"
-    ./jetbrains-toolbox-"${BUILD_VERSION}"/jetbrains-toolbox
+    $HOME/.local/share/JetBrains/ToolboxApp/bin/jetbrains-toolbox
 
 # alias for install-incus
 [group('Apps')]
@@ -172,7 +174,7 @@ install-incus:
     CURRENT_IMAGE=$(rpm-ostree status -b --json | jq -r '.deployments[0]."container-image-reference"')
     if ! grep -e "-dx" <<< $CURRENT_IMAGE ; then
         echo "Developer mode is currently ${b}${red}Disabled${n}."
-        echo "Run \"just devmode\" to turn on Developer mode."
+        echo "Run \"ujust devmode\" to turn on Developer mode."
         exit
     fi
     echo 'Installing and configuring Incus.'
