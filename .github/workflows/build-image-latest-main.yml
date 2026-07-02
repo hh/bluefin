@@ -6,12 +6,19 @@ on:
       - main
       - testing
     paths-ignore:
+      - ".github/workflows/*validate*.yml"
       - "**.md"
-  schedule:
-    - cron: "50 4 * * 1,2,3,4,5,6" # 4:50 UTC All But Sunday
-    - cron: "50 4 * * 0" # 4:50 UTC Sunday
+      - "flatpaks/**"
+      - "system_files/shared/etc/bazaar/**"
   workflow_call:
   workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+  attestations: write
+  artifact-metadata: write
 
 jobs:
   build-image-latest:
@@ -23,21 +30,16 @@ jobs:
       matrix:
         brand_name: ["bluefin"]
     with:
-      image_flavors: '["main", "nvidia", "nvidia-open"]'
+      image_flavors: '["main", "nvidia-open"]'
       brand_name: ${{ matrix.brand_name }}
       stream_name: latest
 
   generate-release:
     name: Generate Release
     needs: [build-image-latest]
+    permissions:
+      contents: write
     secrets: inherit
     uses: ./.github/workflows/generate-release.yml
     with:
       stream_name: '["latest"]'
-
-  # build-iso-latest:
-  #   name: Build Latest ISOs
-  #   needs: [build-image-latest]
-  #   if: github.event.schedule == '50 4 * * 0'
-  #   secrets: inherit
-  #   uses: ./.github/workflows/build-iso-latest.yml
